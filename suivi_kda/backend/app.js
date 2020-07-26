@@ -1,6 +1,20 @@
 const express=require('express');
 const app=express();
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const stuffRoutes = require('./routes/stuff');
+const userRoutes = require('./routes/user');
+const path = require('path');
+
+
+
+
+
+mongoose.connect('mongodb+srv://josephine:<1234567890>@cluster0.gigln.mongodb.net/<suivi_apprenant>?retryWrites=true&w=majority',
+  { useNewUrlParser: true,
+    useUnifiedTopology: true })
+  .then(() => console.log('Connexion à MongoDB réussie !'))
+  .catch(() => console.log('Connexion à MongoDB échouée !'));
 
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -10,11 +24,8 @@ app.use((req, res, next) => {
   });
 
   app.use(bodyParser.json());
-
-app.use((req,res,next)=>{
-
-res.json({message:'Votre message a été reçu'});
-next();
-});
+  app.use('/api/stuff', stuffRoutes);
+  app.use('/api/auth', userRoutes);
+  app.use('/image', express.static(path.join(__dirname, 'image')));
 
 module.exports=app;
